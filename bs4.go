@@ -8,15 +8,30 @@ import (
 	"gitee.com/baixudong/re"
 	"gitee.com/baixudong/tools"
 	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/net/html"
 )
 
 // 文档树操作========================================================================= start
 type Client struct {
-	object  *goquery.Selection
-	baseUrl string
+	object    *goquery.Selection
+	baseUrl   string
+	nodeParse bool
 }
 
 // 创建一个文档树
+func NewClientWithNode(node *html.Node, baseUrl ...string) *Client {
+	html := goquery.NewDocumentFromNode(node)
+	if html.Size() < 1 {
+		return nil
+	}
+	cli := new(Client)
+	if len(baseUrl) > 0 {
+		cli.baseUrl = baseUrl[0]
+		html.Url, _ = url.Parse(baseUrl[0])
+	}
+	cli.nodeParse = true
+	return cli.newDocument(html.Eq(0))
+}
 func NewClient(txt string, baseUrl ...string) *Client {
 	html, err := goquery.NewDocumentFromReader(strings.NewReader(txt))
 	if err != nil {
@@ -34,8 +49,14 @@ func NewClient(txt string, baseUrl ...string) *Client {
 }
 func (obj *Client) newDocument(selection *goquery.Selection) *Client {
 	client := &Client{object: selection, baseUrl: obj.baseUrl}
-	for _, iframe := range client.finds("iframe") {
-		iframe.Replace(newNode("goIframe", iframe.Attrs(), iframe.Text()))
+	if obj.nodeParse {
+		for _, iframe := range client.finds("iframe") {
+			iframe.Name("goIframe")
+		}
+	} else {
+		for _, iframe := range client.finds("iframe") {
+			iframe.Replace(newNode("goIframe", iframe.Attrs(), iframe.Text()))
+		}
 	}
 	return client
 }
@@ -50,6 +71,7 @@ func electionCallBack(election string) string {
 func (obj *Client) Find(election string) *Client {
 	election = electionCallBack(election)
 	rs := obj.object.Find(election)
+	// log.Print(rs.Size())
 	if rs.Size() > 0 {
 		return obj.newDocument(rs.Eq(0))
 	}
