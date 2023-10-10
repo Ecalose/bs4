@@ -314,9 +314,9 @@ func clearNode(results []*NodeA) [][]*NodeA {
 			}
 		}
 		if len(groupMaps[i].nodes) > 1 {
-			sort.Slice(groupMaps[i].nodes, func(i, j int) bool {
-				path := groupMaps[i].nodes[i].node.paths
-				path2 := groupMaps[i].nodes[j].node.paths
+			sort.Slice(groupMaps[i].nodes, func(si, sj int) bool {
+				path := groupMaps[i].nodes[si].node.paths
+				path2 := groupMaps[i].nodes[sj].node.paths
 
 				path_len := len(path)
 				path2_len := len(path2)
