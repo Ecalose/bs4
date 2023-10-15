@@ -5,9 +5,9 @@ import (
 	"net/url"
 	"strings"
 
-	"gitee.com/baixudong/re"
-	"gitee.com/baixudong/tools"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gospider007/re"
+	"github.com/gospider007/tools"
 	"golang.org/x/net/html"
 )
 

@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"gitee.com/baixudong/kinds"
-	"gitee.com/baixudong/re"
-	"gitee.com/baixudong/tools"
+	"github.com/gospider007/kinds"
+	"github.com/gospider007/re"
+	"github.com/gospider007/tools"
 )
 
 type ListOption struct {
