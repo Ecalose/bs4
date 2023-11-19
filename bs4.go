@@ -6,16 +6,14 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gospider007/re"
 	"github.com/gospider007/tools"
 	"golang.org/x/net/html"
 )
 
 // 文档树操作========================================================================= start
 type Client struct {
-	object    *goquery.Selection
-	baseUrl   string
-	nodeParse bool
+	object  *goquery.Selection
+	baseUrl string
 }
 
 // 创建一个文档树
@@ -29,7 +27,6 @@ func NewClientWithNode(node *html.Node, baseUrl ...string) *Client {
 		cli.baseUrl = baseUrl[0]
 		html.Url, _ = url.Parse(baseUrl[0])
 	}
-	cli.nodeParse = true
 	return cli.newDocument(html.Eq(0))
 }
 func NewClient(txt string, baseUrl ...string) *Client {
@@ -48,30 +45,12 @@ func NewClient(txt string, baseUrl ...string) *Client {
 	return cli.newDocument(html.Eq(0))
 }
 func (obj *Client) newDocument(selection *goquery.Selection) *Client {
-	client := &Client{object: selection, baseUrl: obj.baseUrl}
-	if obj.nodeParse {
-		for _, iframe := range client.finds("iframe") {
-			iframe.Name("goIframe")
-		}
-	} else {
-		for _, iframe := range client.finds("iframe") {
-			iframe.Replace(newNode("goIframe", iframe.Attrs(), iframe.Text()))
-		}
-	}
-	return client
-}
-func electionCallBack(election string) string {
-	election = re.SubFunc(`^iframe\W|\Wiframe\W|\Wiframe$|^iframe$`, func(s string) string {
-		return re.Sub("iframe", "goIframe", s)
-	}, election)
-	return election
+	return &Client{object: selection, baseUrl: obj.baseUrl}
 }
 
 // 寻找一个节点
 func (obj *Client) Find(election string) *Client {
-	election = electionCallBack(election)
 	rs := obj.object.Find(election)
-	// log.Print(rs.Size())
 	if rs.Size() > 0 {
 		return obj.newDocument(rs.Eq(0))
 	}
@@ -80,7 +59,6 @@ func (obj *Client) Find(election string) *Client {
 
 // 寻找多个节点
 func (obj *Client) Finds(election string) []*Client {
-	election = electionCallBack(election)
 	return obj.finds(election)
 }
 func (obj *Client) finds(election string) []*Client {
@@ -98,7 +76,6 @@ func (obj *Client) Next(elections ...string) *Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-	election = electionCallBack(election)
 	if election == "" {
 		return obj.newDocument(obj.object.Next())
 	} else {
@@ -112,7 +89,6 @@ func (obj *Client) Nexts(elections ...string) []*Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-	election = electionCallBack(election)
 	ll := []*Client{}
 	var rs *goquery.Selection
 	if election == "" {
@@ -132,7 +108,6 @@ func (obj *Client) Prev(elections ...string) *Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-	election = electionCallBack(election)
 
 	if election == "" {
 		return obj.newDocument(obj.object.Prev())
@@ -147,7 +122,6 @@ func (obj *Client) Prevs(elections ...string) []*Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-	election = electionCallBack(election)
 	ll := []*Client{}
 	var rs *goquery.Selection
 	if election == "" {
@@ -167,7 +141,6 @@ func (obj *Client) Sibs(elections ...string) []*Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-	election = electionCallBack(election)
 
 	ll := []*Client{}
 	var rs *goquery.Selection
@@ -188,7 +161,6 @@ func (obj *Client) Childrens(elections ...string) []*Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-	election = electionCallBack(election)
 
 	ll := []*Client{}
 	var rs *goquery.Selection
@@ -219,7 +191,6 @@ func (obj *Client) Contents(elections ...string) []*Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-	election = electionCallBack(election)
 
 	ll := []*Client{}
 	var rs *goquery.Selection
@@ -249,7 +220,6 @@ func (obj *Client) Parent(elections ...string) *Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-	election = electionCallBack(election)
 
 	if election == "" {
 		return obj.newDocument(obj.object.Parent())
@@ -264,7 +234,6 @@ func (obj *Client) Parents(elections ...string) []*Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-	election = electionCallBack(election)
 
 	ll := []*Client{}
 	var rs *goquery.Selection
