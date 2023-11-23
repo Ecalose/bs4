@@ -8,6 +8,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gospider007/tools"
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 )
 
 // 文档树操作========================================================================= start
@@ -50,16 +51,23 @@ func (obj *Client) newDocument(selection *goquery.Selection) *Client {
 
 // 寻找一个节点
 func (obj *Client) Find(election string) *Client {
-	rs := obj.object.Find(election)
-	if rs.Size() > 0 {
-		return obj.newDocument(rs.Eq(0))
+	rs := obj.Finds(election)
+	if len(rs) > 0 {
+		return rs[0]
 	}
 	return nil
 }
 
 // 寻找多个节点
 func (obj *Client) Finds(election string) []*Client {
-	return obj.finds(election)
+	if obj.Name() == "iframe" {
+		return NewClient(obj.Text()).Finds(election)
+	}
+	clients := obj.finds(election)
+	for _, iframe := range obj.finds("iframe") {
+		clients = append(clients, iframe.Finds(election)...)
+	}
+	return clients
 }
 func (obj *Client) finds(election string) []*Client {
 	ll := []*Client{}
@@ -312,7 +320,17 @@ func (obj *Client) Name(str ...string) string {
 		return goquery.NodeName(obj.object)
 	}
 	if len(obj.object.Nodes) > 0 {
-		obj.object.Nodes[0].Data = str[0]
+		if obj.Name() != str[0] {
+			if obj.Name() == "iframe" {
+				txt := obj.Text()
+				obj.object.Nodes[0].Data = str[0]
+				obj.object.Nodes[0].DataAtom = atom.Lookup(tools.StringToBytes(str[0]))
+				obj.SetHtml(txt)
+			} else {
+				obj.object.Nodes[0].Data = str[0]
+				obj.object.Nodes[0].DataAtom = atom.Lookup(tools.StringToBytes(str[0]))
+			}
+		}
 	}
 	return ""
 }
