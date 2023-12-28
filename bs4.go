@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gospider007/re"
 	"github.com/gospider007/tools"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
@@ -31,6 +32,9 @@ func NewClientWithNode(node *html.Node, baseUrl ...string) *Client {
 	return cli.newDocument(html.Eq(0))
 }
 func NewClient(txt string, baseUrl ...string) *Client {
+	txt = re.SubFunc(`<\w+(?:\s+\w+(?:\s*?=\s*?(?:".*?"|'.*?'))?)*?\s*?/>`, func(s string) string {
+		return re.Sub("/>$", fmt.Sprintf("></%s>", re.Search(`<(\w+)`, s).Group(1)), s)
+	}, txt)
 	html, err := goquery.NewDocumentFromReader(strings.NewReader(txt))
 	if err != nil {
 		return nil
@@ -339,13 +343,6 @@ func (obj *Client) Name(str ...string) string {
 func (obj *Client) String() string {
 	html, _ := goquery.OuterHtml(obj.object)
 	return html
-}
-func newNode(name string, attrs map[string]string, content string) string {
-	attrDom := ""
-	for k, v := range attrs {
-		attrDom += fmt.Sprintf(` %s="%s"`, k, v)
-	}
-	return fmt.Sprintf("<%s%s>%s</%s>", name, attrDom, content, name)
 }
 
 // 设置节点的dom
