@@ -32,8 +32,12 @@ func NewClientWithNode(node *html.Node, baseUrl ...string) *Client {
 	return cli.newDocument(html.Eq(0))
 }
 func NewClient(txt string, baseUrl ...string) *Client {
-	txt = re.SubFunc(`<\w+(?:\s+\w+(?:\s*?=\s*?(?:".*?"|'.*?'))?)*?\s*?/>`, func(s string) string {
-		return re.Sub("/>$", fmt.Sprintf("></%s>", re.Search(`<(\w+)`, s).Group(1)), s)
+	txt = re.SubFunc(`<\w+(\s+\w+(\s*?=\s*?(".*?"|'.*?'))?)*?\s*?/?>`, func(s string) string {
+		if strings.HasSuffix(s, "/>") {
+			return re.Sub("/>$", fmt.Sprintf("></%s>", re.Search(`<(\w+)`, s).Group(1)), s)
+		} else {
+			return s
+		}
 	}, txt)
 	html, err := goquery.NewDocumentFromReader(strings.NewReader(txt))
 	if err != nil {
