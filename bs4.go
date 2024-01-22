@@ -419,3 +419,8 @@ func (obj *Client) Attrs() map[string]string {
 	}
 	return result
 }
+
+// 返回节点的所有属性
+func (obj *Client) Nodes() []*html.Node {
+	return obj.object.Nodes
+}
