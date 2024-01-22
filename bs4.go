@@ -324,8 +324,13 @@ func (obj *Client) Text(str ...string) string {
 	// Slightly optimized vs calling Each: no single selection object created
 	var f func(*html.Node)
 	f = func(n *html.Node) {
-		if n.Type == html.TextNode {
-			// Keep newlines and spaces, like jQuery
+		switch n.Type {
+		case html.ElementNode:
+			switch n.DataAtom {
+			case atom.Br:
+				buf.WriteString("\n")
+			}
+		case html.TextNode:
 			buf.WriteString(n.Data)
 		}
 		if n.FirstChild != nil {
