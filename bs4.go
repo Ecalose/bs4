@@ -1,6 +1,7 @@
 package bs4
 
 import (
+	"bytes"
 	"fmt"
 	"net/url"
 	"strings"
@@ -316,11 +317,27 @@ func (obj *Client) Clear() *Client {
 
 // 返回节点内容或设置节点内容
 func (obj *Client) Text(str ...string) string {
-	if len(str) == 0 {
-		return obj.object.Text()
-	} else {
-		return obj.object.SetText(str[0]).Text()
+	if len(str) != 0 {
+		obj.object.SetText(str[0])
 	}
+	var buf bytes.Buffer
+	// Slightly optimized vs calling Each: no single selection object created
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.TextNode {
+			// Keep newlines and spaces, like jQuery
+			buf.WriteString(n.Data)
+		}
+		if n.FirstChild != nil {
+			for c := n.FirstChild; c != nil; c = c.NextSibling {
+				f(c)
+			}
+		}
+	}
+	for _, n := range obj.object.Nodes {
+		f(n)
+	}
+	return buf.String()
 }
 
 // 返回节点名称或设置节点名称
