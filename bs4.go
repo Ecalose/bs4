@@ -328,11 +328,30 @@ func (obj *Client) Text(str ...string) string {
 		switch n.Type {
 		case html.ElementNode:
 			switch n.DataAtom {
+			case atom.Input:
+				var isText bool
+				var textValue string
+				for _, attr := range n.Attr {
+					if attr.Key == "type" && attr.Val == "text" {
+						isText = true
+					}
+					switch attr.Key {
+					case "type":
+						if attr.Val == "text" {
+							isText = true
+						}
+					case "value":
+						textValue = attr.Val
+					}
+				}
+				if isText {
+					buf.WriteString(textValue)
+				}
 			case atom.Br, atom.P:
 				buf.WriteString("\n")
 			}
 		case html.TextNode:
-			buf.WriteString(n.Data)
+			buf.WriteString(strings.TrimSpace(n.Data))
 		}
 		if n.FirstChild != nil {
 			for c := n.FirstChild; c != nil; c = c.NextSibling {
