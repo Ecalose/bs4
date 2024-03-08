@@ -347,7 +347,7 @@ func (obj *Client) Text(str ...string) string {
 				if isText {
 					buf.WriteString(textValue)
 				}
-			case atom.Br, atom.P:
+			case atom.Br, atom.P, atom.Li, atom.Ul, atom.Div:
 				buf.WriteString("\n")
 			}
 		case html.TextNode:
