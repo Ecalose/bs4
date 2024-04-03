@@ -297,8 +297,13 @@ func (obj *Client) Before(str string) *Client {
 }
 
 // 替换节点
-func (obj *Client) Replace(str string) *Client {
+func (obj *Client) ReplaceWithHtml(str string) *Client {
 	return obj.newDocument(obj.object.ReplaceWithHtml(str))
+}
+
+// 替换节点
+func (obj *Client) ReplaceWithSelection(c *Client) *Client {
+	return obj.newDocument(obj.object.ReplaceWithSelection(c.object))
 }
 
 // 复制节点
