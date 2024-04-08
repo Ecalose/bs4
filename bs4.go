@@ -210,7 +210,6 @@ func (obj *Client) Contents(elections ...string) []*Client {
 	if len(elections) > 0 {
 		election = elections[0]
 	}
-
 	ll := []*Client{}
 	var rs *goquery.Selection
 	if election == "" {
@@ -219,7 +218,11 @@ func (obj *Client) Contents(elections ...string) []*Client {
 		rs = obj.object.ContentsFiltered(election)
 	}
 	for i := 0; i < rs.Size(); i++ {
-		ll = append(ll, obj.newDocument(rs.Eq(i)))
+		llt := obj.newDocument(rs.Eq(i))
+		if llt.Name() == "#text" && re.Sub(`\s`, "", llt.Text()) == "" {
+			continue
+		}
+		ll = append(ll, llt)
 	}
 	return ll
 }
@@ -282,8 +285,12 @@ func (obj *Client) Prepend(str string) *Client {
 }
 
 // 在节点中的末尾添加节点
-func (obj *Client) Append(str string) *Client {
+func (obj *Client) AppendHtml(str string) *Client {
 	return obj.newDocument(obj.object.AppendHtml(str))
+}
+
+func (obj *Client) AppendSelection(c *Client) *Client {
+	return obj.newDocument(obj.object.AppendSelection(c.object))
 }
 
 // 在节点之后添加节点
