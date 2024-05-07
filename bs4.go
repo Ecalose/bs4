@@ -362,6 +362,8 @@ func (obj *Client) Text(str ...string) string {
 			case atom.Br, atom.P, atom.Li, atom.Ul, atom.Div, atom.H1, atom.H2, atom.H3, atom.H4, atom.H5, atom.H6,
 				atom.Header, atom.Form, atom.Table, atom.Tr, atom.Tbody, atom.Iframe:
 				buf.WriteString("\n")
+			case atom.Td:
+				buf.WriteString(" ")
 			}
 		case html.TextNode:
 			buf.WriteString(strings.TrimSpace(n.Data))
