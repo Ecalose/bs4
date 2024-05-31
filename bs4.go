@@ -328,15 +328,16 @@ func (obj *Client) Clear() *Client {
 	return obj.newDocument(obj.object.Empty())
 }
 
+func (obj *Client) SetText(str string) {
+	obj.object.SetText(str)
+}
+
 // 返回节点内容或设置节点内容
-func (obj *Client) Text(str ...string) string {
-	if len(str) != 0 {
-		obj.object.SetText(str[0])
-	}
+func (obj *Client) Text() string {
 	var buf bytes.Buffer
 	// Slightly optimized vs calling Each: no single selection object created
 	var f func(*html.Node)
-	f = func(n *html.Node) {
+	f2 := func(n *html.Node) (bool, bool, bool) {
 		var isBlack bool
 		var isSpan bool
 		var isTextNode bool
@@ -349,7 +350,7 @@ func (obj *Client) Text(str ...string) string {
 			case atom.Br, atom.P, atom.Li, atom.Ul, atom.Div, atom.H1, atom.H2, atom.H3, atom.H4, atom.H5, atom.H6,
 				atom.Header, atom.Form, atom.Table, atom.Tr, atom.Tbody, atom.Iframe:
 				isBlack = true
-			case atom.Td, atom.Strong, atom.Span:
+			case atom.Td, atom.Strong:
 				isSpan = true
 			default:
 			}
@@ -378,18 +379,22 @@ func (obj *Client) Text(str ...string) string {
 			if isText {
 				buf.WriteString(textValue)
 			}
-		} else if isSpan {
-			buf.WriteString(" ")
 		} else if isTextNode {
-			buf.WriteString(strings.TrimSpace(n.Data))
+			buf.WriteString(re.Sub(`\s+`, " ", n.Data))
 		}
-		if n.FirstChild != nil {
+		return isBlack, isSpan, n.FirstChild != nil
+	}
+	f = func(n *html.Node) {
+		isBlack, isSpan, ok := f2(n)
+		if ok {
 			for c := n.FirstChild; c != nil; c = c.NextSibling {
 				f(c)
 			}
 		}
 		if isBlack {
 			buf.WriteString("\n")
+		} else if isSpan {
+			buf.WriteString(" ")
 		}
 	}
 	for _, n := range obj.object.Nodes {
