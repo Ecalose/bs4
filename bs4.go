@@ -337,41 +337,59 @@ func (obj *Client) Text(str ...string) string {
 	// Slightly optimized vs calling Each: no single selection object created
 	var f func(*html.Node)
 	f = func(n *html.Node) {
+		var isBlack bool
+		var isSpan bool
+		var isTextNode bool
+		var isInput bool
 		switch n.Type {
 		case html.ElementNode:
 			switch n.DataAtom {
 			case atom.Input:
-				var isText bool
-				var textValue string
-				for _, attr := range n.Attr {
-					if attr.Key == "type" && attr.Val == "text" {
-						isText = true
-					}
-					switch attr.Key {
-					case "type":
-						if attr.Val == "text" {
-							isText = true
-						}
-					case "value":
-						textValue = attr.Val
-					}
-				}
-				if isText {
-					buf.WriteString(textValue)
-				}
+				isInput = true
 			case atom.Br, atom.P, atom.Li, atom.Ul, atom.Div, atom.H1, atom.H2, atom.H3, atom.H4, atom.H5, atom.H6,
 				atom.Header, atom.Form, atom.Table, atom.Tr, atom.Tbody, atom.Iframe:
-				buf.WriteString("\n")
-			case atom.Td:
-				buf.WriteString(" ")
+				isBlack = true
+			case atom.Td, atom.Strong, atom.Span:
+				isSpan = true
+			default:
 			}
 		case html.TextNode:
+			isTextNode = true
+		default:
+		}
+		if isBlack {
+			buf.WriteString("\n")
+		} else if isInput {
+			var isText bool
+			var textValue string
+			for _, attr := range n.Attr {
+				if attr.Key == "type" && attr.Val == "text" {
+					isText = true
+				}
+				switch attr.Key {
+				case "type":
+					if attr.Val == "text" {
+						isText = true
+					}
+				case "value":
+					textValue = attr.Val
+				}
+			}
+			if isText {
+				buf.WriteString(textValue)
+			}
+		} else if isSpan {
+			buf.WriteString(" ")
+		} else if isTextNode {
 			buf.WriteString(strings.TrimSpace(n.Data))
 		}
 		if n.FirstChild != nil {
 			for c := n.FirstChild; c != nil; c = c.NextSibling {
 				f(c)
 			}
+		}
+		if isBlack {
+			buf.WriteString("\n")
 		}
 	}
 	for _, n := range obj.object.Nodes {
