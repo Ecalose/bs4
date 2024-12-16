@@ -23,9 +23,9 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
-	github.com/mholt/archives v0.0.0-20241203232558-998c9622f6b8 // indirect
+	github.com/mholt/archives v0.0.0-20241216060121-23e0af8fe73d // indirect
 	github.com/nwaples/rardecode/v2 v2.0.1 // indirect
-	github.com/pierrec/lz4/v4 v4.1.21 // indirect
+	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/sorairolake/lzip-go v0.3.5 // indirect
 	github.com/therootcompany/xz v1.0.1 // indirect
 	github.com/ulikunitz/xz v0.5.12 // indirect
