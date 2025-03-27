@@ -295,7 +295,7 @@ func clearNode(results []*NodeA) [][]*NodeA {
 			nodes: nodeScors,
 		})
 	}
-	sort.Slice(groupMaps, func(i, j int) bool {
+	sort.SliceStable(groupMaps, func(i, j int) bool {
 		return groupMaps[i].score() > groupMaps[j].score()
 	})
 	result := [][]*NodeA{}
@@ -314,7 +314,7 @@ func clearNode(results []*NodeA) [][]*NodeA {
 			}
 		}
 		if len(groupMaps[i].nodes) > 1 {
-			sort.Slice(groupMaps[i].nodes, func(si, sj int) bool {
+			sort.SliceStable(groupMaps[i].nodes, func(si, sj int) bool {
 				path := groupMaps[i].nodes[si].node.paths
 				path2 := groupMaps[i].nodes[sj].node.paths
 
