@@ -426,8 +426,12 @@ func (obj *Client) Name(str ...string) string {
 
 // 返回节点的dom 字符串
 func (obj *Client) String() string {
-	html, _ := goquery.OuterHtml(obj.object)
-	return html
+	if obj.object.Length() == 0 {
+		return ""
+	}
+	var builder strings.Builder
+	Render(&builder, obj.object.Get(0))
+	return builder.String()
 }
 
 // 设置节点的dom
