@@ -6,7 +6,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.11.0
 	github.com/gospider007/kinds v0.0.0-20250815031133-b2282666f69c
 	github.com/gospider007/re v0.0.0-20251212071142-f56bce921150
-	github.com/gospider007/tools v0.0.0-20260108062122-babc2c2f0542
+	github.com/gospider007/tools v0.0.0-20260112022617-50048b32a16a
 	golang.org/x/net v0.48.0
 )
 
