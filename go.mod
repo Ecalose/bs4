@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/PuerkitoBio/goquery v1.11.0
-	github.com/gospider007/kinds v0.0.0-20250815031133-b2282666f69c
+	github.com/gospider007/kinds v0.0.0-20260211060834-06a10e2431d8
 	github.com/gospider007/re v0.0.0-20251212071142-f56bce921150
 	github.com/gospider007/tools v0.0.0-20260211054355-2d23f4156896
 	golang.org/x/net v0.50.0
