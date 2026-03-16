@@ -3,7 +3,7 @@ module github.com/gospider007/bs4
 go 1.26.0
 
 require (
-	github.com/PuerkitoBio/goquery v1.11.0
+	github.com/PuerkitoBio/goquery v1.12.0
 	github.com/gospider007/kinds v0.0.0-20260211060834-06a10e2431d8
 	github.com/gospider007/re v0.0.0-20260227072205-6223d82a3dab
 	github.com/gospider007/tools v0.0.0-20260312032233-dcd42802e7e0
