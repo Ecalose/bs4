@@ -16,6 +16,6 @@ require (
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/minio/minlz v1.1.0 // indirect
-	golang.org/x/image v0.37.0 // indirect
+	golang.org/x/image v0.38.0 // indirect
 	golang.org/x/text v0.35.0 // indirect
 )
