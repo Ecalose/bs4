@@ -3,7 +3,7 @@ module github.com/gospider007/bs4
 go 1.27.0
 
 require (
-	github.com/PuerkitoBio/goquery v1.12.0
+	github.com/PuerkitoBio/goquery v1.13.0
 	github.com/gospider007/kinds v0.0.0-20260824054539-a612e386b5ac
 	github.com/gospider007/re v0.0.0-20260824054539-32823144d328
 	github.com/gospider007/tools v0.0.0-20260826022531-159b55a750ab
@@ -11,7 +11,7 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.2.2 // indirect
+	github.com/andybalholm/brotli v1.2.3 // indirect
 	github.com/andybalholm/cascadia v1.3.4 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/klauspost/compress v1.19.2 // indirect
